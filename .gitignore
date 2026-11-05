@@ -1,0 +1,50 @@
+# Environment and API keys (CRITICAL - NEVER COMMIT SECRETS)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Local memory journals & user history
+.memory/
+*.memory.json
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# Python cache & build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Logs & temporary files
+*.log
+scratch/
+tmp/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

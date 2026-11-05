@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bgGlow2" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#181822" />
+      <stop offset="60%" stop-color="#0e0e12" />
+      <stop offset="100%" stop-color="#08080a" />
+    </radialGradient>
+    <linearGradient id="chromeGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="30%" stop-color="#cbd5e1" />
+      <stop offset="60%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#f8fafc" />
+    </linearGradient>
+    <linearGradient id="lensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+
+  <rect width="600" height="360" fill="url(#bgGlow2)" rx="12" />
+
+  <!-- Target Viewfinder Reticle & Workspace Frames -->
+  <rect x="180" y="70" width="240" height="160" rx="8" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="8,8" />
+  <rect x="200" y="85" width="200" height="130" rx="4" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+  
+  <!-- Corner Reticle Marks -->
+  <path d="M170 85 L170 65 L190 65" stroke="#94a3b8" stroke-width="2" fill="none" />
+  <path d="M430 85 L430 65 L410 65" stroke="#94a3b8" stroke-width="2" fill="none" />
+  <path d="M170 215 L170 235 L190 235" stroke="#94a3b8" stroke-width="2" fill="none" />
+  <path d="M430 215 L430 235 L410 235" stroke="#94a3b8" stroke-width="2" fill="none" />
+
+  <!-- Center Aperture & Lens Mechanism -->
+  <g transform="translate(300, 150)">
+    <!-- Outer Titanium Ring -->
+    <circle cx="0" cy="0" r="72" fill="#1e2025" stroke="url(#chromeGrad2)" stroke-width="3" />
+    <circle cx="0" cy="0" r="62" fill="none" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,4" />
+
+    <!-- Aperture Iris Blades (Faceted Geometry) -->
+    <polygon points="0,-48 36,-30 48,0 30,36 0,48 -36,30 -48,0 -30,-36" fill="url(#lensGrad)" stroke="#475569" stroke-width="1.5" />
+    <circle cx="0" cy="0" r="32" fill="#0b0b0e" stroke="#94a3b8" stroke-width="1" />
+
+    <!-- Crystal Optical Glass Highlight -->
+    <circle cx="-6" cy="-8" r="16" fill="rgba(255,255,255,0.15)" filter="blur(2px)" />
+    <circle cx="0" cy="0" r="8" fill="#ffffff" opacity="0.8" />
+  </g>
+
+  <!-- Labels -->
+  <text x="36" y="44" font-family="'Space Mono', monospace" font-size="11" fill="#94a3b8" letter-spacing="1.5">STAGE 02 // SPATIAL OBSERVER</text>
+  <text x="36" y="64" font-family="'Cinzel', serif" font-size="16" font-weight="700" fill="#ffffff" letter-spacing="1">Discrete 5s Screen Observer</text>
+  <text x="564" y="325" font-family="'Space Mono', monospace" font-size="10" fill="#64748b" text-anchor="end" letter-spacing="1">720P GDI FRAME / MSS SNAP</text>
+</svg>
+

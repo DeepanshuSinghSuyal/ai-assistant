@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR ASSISTANT // LIVE 3D COGNITIVE PICTURE-BOOK</title>
+  
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Local Offline-First High-Performance Libraries (with CDN fallback) -->
+  <script src="libs/three.min.js"></script>
+  <script>
+    if (typeof THREE === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+    }
+  </script>
+  <script src="libs/OrbitControls.js"></script>
+  <script>
+    if (typeof THREE.OrbitControls === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
+    }
+  </script>
+  <script src="libs/tween.umd.js"></script>
+  <script>
+    if (typeof TWEEN === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"><\/script>');
+    }
+  </script>
+</head>
+<body>
+  <!-- 3D WebGL Canvas Layer -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Studio Vignette & Fine Grain Texture Overlay -->
+  <div class="vignette-overlay"></div>
+
+  <!-- Top Luxury Header Navigation -->
+  <header class="top-nav">
+    <div class="brand">
+      <div class="silver-monogram">AR</div>
+      <div class="brand-text">
+        <span class="system-title">MULTIMODAL AR TUTOR</span>
+        <span class="system-sub">LIVE 3D COGNITIVE ARCHITECTURE</span>
+      </div>
+    </div>
+
+    <!-- Live Pipeline Progress Cycle -->
+    <div class="pipeline-cycle-deck">
+      <div class="cycle-step" id="step-audio">
+        <span class="step-num">01</span>
+        <span class="step-lbl">AUDIO IN</span>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-step active-blink" id="step-vision">
+        <span class="step-num">02</span>
+        <span class="step-lbl">EYE (1s)</span>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-step" id="step-core">
+        <span class="step-num">03</span>
+        <span class="step-lbl">FUSION</span>
+      </div>
+      <div class="cycle-arrow">→</div>
+      <div class="cycle-step" id="step-voice">
+        <span class="step-num">04</span>
+        <span class="step-lbl">VOICE OUT</span>
+      </div>
+    </div>
+
+    <!-- Presentation Mode Deck & Live Status -->
+    <div class="header-actions">
+      <button id="teacher-tour-btn" class="glass-pill-btn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span id="tour-btn-text">AUTO-TOUR FOR TEACHER</span>
+      </button>
+
+      <div class="telemetry-pill" id="live-connection-badge">
+        <span class="status-dot"></span>
+        <span class="t-val" id="live-status-text">LIVE LINKED</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Left Floating Interactive Picture-Book Story Deck -->
+  <main class="storybook-container">
+    <article class="storybook-card" id="active-chapter-card">
+      <!-- Chapter Header & Counter -->
+      <div class="card-meta">
+        <span class="chapter-tag" id="ch-tag">CHAPTER I // 04</span>
+        <span class="chapter-stage-label" id="ch-stage">AUDIO PERCEPTION</span>
+      </div>
+
+      <h1 class="chapter-title" id="ch-title">Audio Perception</h1>
+      <h2 class="chapter-subtitle" id="ch-subtitle">Speech & Intent Ingestion</h2>
+
+      <!-- Visual Concept Illustration Window -->
+      <div class="illustration-frame" id="illustration-box">
+        <div class="frame-reflection-shine"></div>
+        <img id="ch-image" src="assets/chapter1_perception.svg" alt="Chapter Concept Illustration" onerror="this.style.display='none'">
+        <div class="frame-overlay-badge">
+          <span class="badge-dot"></span>
+          <span class="badge-text" id="ch-badge-text">VOICE INGESTION</span>
+        </div>
+      </div>
+
+      <!-- Narrative Story Description (Picture-Book Prose) -->
+      <p class="chapter-prose" id="ch-prose">
+        Captures speech and conversational questions in real time. When you speak, the acoustic capsule illuminates, transforming voice into clean intent with zero audio buffer lag.
+      </p>
+
+      <!-- Key Visual Feature Highlights (Pill Badges) -->
+      <div class="feature-pills" id="ch-pills">
+        <span class="pill-item">Zero Audio Buffer Delay</span>
+        <span class="pill-item">Speech &amp; Intent Ingestion</span>
+        <span class="pill-item">16,000 Hz Input Stream</span>
+      </div>
+
+      <!-- Chapter Navigation Controls -->
+      <div class="chapter-nav-bar">
+        <button id="prev-ch-btn" class="nav-arrow-btn" aria-label="Previous Chapter">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+
+        <div class="chapter-dots-container" id="chapter-dots">
+          <button class="dot-btn active" data-index="0" title="Chapter 1: Audio Perception">I</button>
+          <button class="dot-btn" data-index="1" title="Chapter 2: Spatial Eye">II</button>
+          <button class="dot-btn" data-index="2" title="Chapter 3: Fusion Core">III</button>
+          <button class="dot-btn" data-index="3" title="Chapter 4: Voice Output">IV</button>
+        </div>
+
+        <button id="next-ch-btn" class="nav-arrow-btn" aria-label="Next Chapter">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </article>
+  </main>
+
+  <!-- Right Floating Live Terminal AI Synchronized Dossier -->
+  <aside class="right-dossier-card">
+    <div class="dossier-header">
+      <span class="mini-tag">LIVE TERMINAL SYNC</span>
+      <h3 id="live-stage-state">SYSTEM READY</h3>
+    </div>
+
+    <!-- Active User Prompt Display -->
+    <div class="prompt-stream-card">
+      <div class="stream-header">
+        <span class="stream-label">CURRENT PROMPT</span>
+        <span class="stream-status-pill" id="prompt-state-pill">IDLE</span>
+      </div>
+      <div class="prompt-text-box" id="live-prompt-display">
+        "Awaiting your question or speech..."
+      </div>
+    </div>
+
+    <!-- Live AI Output Transcript Stream -->
+    <div class="response-stream-card">
+      <div class="stream-header">
+        <span class="stream-label">AI STREAMING OUTPUT</span>
+        <span class="stream-status-pill" id="output-state-pill">STANDBY</span>
+      </div>
+      <div class="response-text-box" id="live-response-display">
+        (AI response voice & subtitles will stream here in real time)
+      </div>
+    </div>
+
+    <!-- Spatial Eye 1-Second Sampling Heartbeat -->
+    <div class="sampling-heartbeat-card">
+      <div class="heartbeat-info">
+        <span class="hb-dot" id="spatial-eye-hb"></span>
+        <span class="hb-text">SPATIAL EYE SAMPLING</span>
+      </div>
+      <span class="hb-rate" id="snap-counter-display">1.0s BLINK (0 SNAPS)</span>
+    </div>
+
+    <!-- Live Demonstration Trigger for Teacher -->
+    <div class="academic-pulse-box">
+      <button id="pulse-btn" class="silver-glow-button">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span>RUN LIVE CYCLE DEMO</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Bottom Floating Viewport Controls -->
+  <footer class="bottom-dock">
+    <div class="dock-inner">
+      <button class="dock-btn active" id="mode-storybook-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>PICTURE-BOOK VIEW</span>
+      </button>
+
+      <button class="dock-btn" id="mode-free-orbit-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        <span>FREE 3D ORBIT</span>
+      </button>
+
+      <div class="dock-divider"></div>
+
+      <button class="dock-btn" id="reset-stage-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <span>RESET STAGE</span>
+      </button>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
