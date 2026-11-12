@@ -1,18 +1,27 @@
-# ⚡ AR ASSISTANT // MULTIMODAL REAL-TIME SOFTWARE TUTOR & 3D PICTURE-BOOK
+# ⚡ AR ASSISTANT // MULTIMODAL SOFTWARE TUTOR & DESKTOP COMPANION
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Gemini Live](https://img.shields.io/badge/Gemini_Live-gemini--3.1--flash--live-purple.svg)](https://ai.google.dev/)
+[![Roamies](https://img.shields.io/badge/Roamies-Desktop_Companion-00e5ff.svg)](https://github.com/KenKaiii/Roamies)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An intelligent, real-time multimodal companion and software tutor powered by **Google Gemini Live (`gemini-3.1-flash-live-preview`)**.
+An intelligent, real-time multimodal co-pilot and interactive desktop tutor powered by **Google Gemini Live (`gemini-3.1-flash-live-preview`)** fused with the interactive desktop companion animations and "Circle-to-Ask" capabilities of **Roamies**.
 
-As you work in any software application (Blender, Unreal Engine, Photoshop, Premiere, DaVinci Resolve, VS Code, terminal tools, CAD, or web apps), the assistant continuously watches your workspace via **1-second discrete frame snapshots**, listens to your voice or typed questions, and responds with **fluid, native 24kHz voice output** and live terminal subtitles—synchronized with an **ultra-luxury interactive 3D WebGL Picture-Book visualizer**.
+As you work in any software application (Blender, Unreal Engine, Photoshop, Premiere, DaVinci Resolve, VS Code, terminal tools, CAD, or web apps), the assistant continuously watches your workspace via **1-second discrete frame snapshots**, listens to your voice or typed questions, and responds with **fluid, native 24kHz voice output** and live terminal subtitles—synchronized with an **ultra-luxury interactive 3D WebGL Picture-Book visualizer** and a **floating desktop companion**.
 
 ---
 
 ## 🌟 Key Features
 
 * **⚡ Ultra-Low Latency Multimodal Live**: Powered by Google Gemini 3.1 Live full-duplex WebSockets with sub-1.8s turnaround.
+* **🎭 5 Gemini Live Voice Personas & Characters**: Each personality pairs an official Gemini Live prebuilt voice model with custom character visuals, behaviors, and specialized system prompts:
+  * ⚡ **JARVIS** (`jarvis` look) ➔ **Voice: Charon** — Stoic, deep, authoritative quantum engineering co-pilot.
+  * 🦊 **Roamie** (`classic` pixel look) ➔ **Voice: Puck** — Witty, agile, energetic workflow shortcut companion.
+  * 🌸 **Luna** (`anime` look) ➔ **Voice: Kore** — Warm, cheerful, encouraging creative arts and software tutor.
+  * 💎 **Sarah** (`sarah` look) ➔ **Voice: Aoede** — Melodic, elegant, articulate UI/UX and design mentor.
+  * ⚔️ **Adrian** (`adrian` look) ➔ **Voice: Fenrir** — Bold, direct, sharp cyber architect and power-user specialist.
+* **⭕ "Circle-to-Ask" Cursor Gesture**: Hold `Alt` and drag your mouse around any button, toolbar icon, or region in your active software to draw a glowing ink circle. The assistant immediately crops that exact region, sends it to Gemini Live, and guides you on what it does.
+* **🖥️ Floating Desktop Companion Overlay**: Run a transparent, frameless, always-on-top desktop companion floating directly above your software workspace (via `pywebview` or browser at `http://localhost:8765/desktop.html`).
 * **👁️ 1-Second Discrete Spatial Sampling**: Uses threaded MSS screen capture to capture a high-resolution workspace snapshot every second without token bloat or video streaming lag.
 * **🎙️ Fluid Voice & Audio Playback**: Native 24kHz 16-bit linear PCM audio streaming through your speakers via PortAudio / sounddevice with synchronous terminal subtitles.
 * **🌐 Live Interactive 3D Picture-Book Visualizer**: A luxury silver, platinum, chrome, and crystal WebGL 3D stage (`http://localhost:8765`) that dynamically mirrors the terminal assistant lifecycle in real time:
@@ -79,8 +88,11 @@ Run the assistant from your terminal:
 # Using Python directly
 python main.py
 
-# Or via CLI script (if installed with pip -e .)
-assistant
+# Launch directly with transparent desktop overlay
+python main.py --overlay
+
+# Or with a specific persona (jarvis, roamie, luna, sarah, adrian)
+python main.py --persona luna
 
 # Or on Windows using the batch launcher
 run.bat
@@ -88,7 +100,8 @@ run.bat
 
 1. Select your target display or drag a crop box over your software application.
 2. The **3D Picture-Book automatically launches** in your default browser at `http://localhost:8765`.
-3. Speak or type your questions!
+3. The **Roamies Companion** is available at `http://localhost:8765/desktop.html` or via the floating desktop window!
+4. Speak or type your questions, or hold `Alt` and circle buttons on your screen!
 
 ---
 
@@ -99,6 +112,8 @@ While the assistant is running:
 | Key / Command | Action |
 | :--- | :--- |
 | **Type question** | Type any question and press Enter to query the assistant with visual context |
+| **`p` / `/persona <name>`** | Switch persona & Gemini Live voice (`jarvis`, `roamie`, `luna`, `sarah`, `adrian`) |
+| **`o` / `/overlay`** | Launch the transparent desktop companion overlay window |
 | **`v`** | Speak directly into your microphone (records 4 seconds of voice audio) |
 | **`s`** | Force an immediate screen snapshot right now |
 | **`r`** | Re-crop your active software window |
@@ -108,14 +123,37 @@ While the assistant is running:
 
 ---
 
+## 🎭 Gemini Live Persona Registry
+
+| Persona | Look | Voice Model | Persona Description |
+| :--- | :--- | :--- | :--- |
+| **⚡ JARVIS** | `jarvis` (3D point sphere) | **Charon** | Deep, authoritative, ultra-precise engineering intelligence |
+| **🦊 Roamie** | `classic` (pixel fox/blob) | **Puck** | Fast, agile, playful, software shortcuts specialist |
+| **🌸 Luna** | `anime` (twin-tail hologram) | **Kore** | Warm, encouraging, patient creative arts and software tutor |
+| **💎 Sarah** | `sarah` (swaying hair avatar) | **Aoede** | Melodic, elegant, articulate UI/UX design mentor |
+| **⚔️ Adrian** | `adrian` (cyber quiff avatar) | **Fenrir** | Bold, commanding, direct power-user architect |
+
+---
+
+## ⭕ "Circle-to-Ask" Cursor Gesture
+
+When you are in the companion view (`/desktop.html`) or the desktop overlay:
+1. Hold **`Alt`** (or click the **⭕ CIRCLE** button in the top HUD).
+2. Click and drag your mouse around any icon, button, setting, or area in your software window.
+3. A glowing procedural ink circle draws along your cursor path.
+4. When you release the mouse, the assistant automatically captures the circled bounding box and transmits it directly to Gemini Live, which identifies the button and explains how to use it!
+
+---
+
 ## 📖 The 3D Picture-Book Architecture
 
 Open `http://localhost:8765` while the assistant runs to explore the interactive 3D stage:
 
-* **▶ AUTO-TOUR FOR TEACHER**: Automatically glides through the 4 chapters every 7.5 seconds, smoothly flying the 3D camera to each component for effortless presentations.
+* **▶ TEACHER TOUR**: Automatically glides through the 4 chapters every 7.5 seconds, smoothly flying the 3D camera to each component for effortless presentations.
 * **RUN LIVE CYCLE DEMO**: Demonstrates a full synthetic roundtrip data flow (Audio In ➔ 1s Eye Shutter ➔ Core Spin ➔ Voice Out ➔ Idle).
 * **FREE 3D ORBIT**: Click and drag to orbit in 3D, right-click to pan, and scroll to zoom.
-* **Offline-First**: All WebGL libraries (`Three.js`, `OrbitControls`, `Tween.js`) and visual vector assets are bundled locally in `web/libs/` and `web/assets/`.
+* **PERSONA SWITCHER**: Switch personas directly from the top navigation bar.
+* **ROAMIES HUD**: One-click button to jump straight to the companion interface.
 
 ---
 
@@ -124,26 +162,31 @@ Open `http://localhost:8765` while the assistant runs to explore the interactive
 ```
 ai-assistant/
 ├── src/
-│   ├── main.py        # Core Gemini Live loop & audio/screen orchestration
-│   ├── config.py      # Environment variables & runtime settings
-│   ├── screen.py      # MSS/GDI fast screen capture & Tkinter region crop selector
-│   ├── observer.py    # 1.0s background screen snapshot engine & telemetry dispatcher
-│   ├── audio.py       # Microphone voice recording & sounddevice player
-│   ├── memory.py      # Daily contextual memory ledger manager
-│   ├── server.py      # Local HTTP & WebSocket telemetry server (ports 8765/8766)
-│   └── ui.py          # Rich terminal HUD & streaming subtitles
+│   ├── main.py            # Core Gemini Live loop, action queue & telemetry dispatcher
+│   ├── personas.py        # 5 Personas & Gemini Live Voice Model mappings (Charon, Puck, Kore, Aoede, Fenrir)
+│   ├── desktop_overlay.py # Pywebview transparent frameless desktop window launcher
+│   ├── config.py          # Environment variables & runtime settings
+│   ├── screen.py          # MSS/GDI fast screen capture, rect crop & region selector
+│   ├── observer.py        # 1.0s background screen snapshot engine & telemetry dispatcher
+│   ├── audio.py           # Microphone voice recording & sounddevice player
+│   ├── memory.py          # Daily contextual memory ledger manager
+│   ├── server.py          # Local HTTP & WebSocket telemetry server (ports 8765/8766)
+│   └── ui.py              # Rich terminal HUD & streaming subtitles
 ├── web/
-│   ├── index.html     # 3D Picture-Book UI & Live Synchronization HUD
-│   ├── style.css      # Ultra-luxury silver/platinum/obsidian frosted glass styling
-│   ├── app.js         # Three.js WebGL scene, PMREM studio lighting & live WebSocket loop
-│   ├── libs/          # Bundled offline Three.js, OrbitControls & Tween.js
-│   └── assets/        # Visual vector concept illustrations (Chapters 1-4)
-├── main.py            # Root launcher entrypoint
-├── run.bat            # Windows quick-launch script
-├── pyproject.toml     # Packaging metadata & dependency definitions
-├── requirements.txt   # Standard pip requirements
-├── .env.example       # Safe public configuration template
-└── .gitignore         # Strict security exclusions (keeps your keys & memory local)
+│   ├── index.html         # 3D Picture-Book UI & Live Synchronization HUD
+│   ├── style.css          # Ultra-luxury silver/platinum/obsidian frosted glass styling
+│   ├── app.js             # Three.js WebGL scene, PMREM studio lighting & live WebSocket loop
+│   ├── desktop.html       # Roamies canvas desktop companion stage
+│   ├── roamies-bridge.js  # Telemetry bridge, circle gesture & floating HUD
+│   ├── roamies/           # KenKaiii/Roamies engine, shaders, avatars & fonts
+│   ├── libs/              # Bundled offline Three.js, OrbitControls & Tween.js
+│   └── assets/            # Visual vector concept illustrations (Chapters 1-4)
+├── main.py                # Root launcher entrypoint
+├── run.bat                # Windows quick-launch script
+├── pyproject.toml         # Packaging metadata & dependency definitions
+├── requirements.txt       # Standard pip requirements
+├── .env.example           # Safe public configuration template
+└── .gitignore             # Strict security exclusions (keeps your keys & memory local)
 ```
 
 ---

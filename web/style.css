@@ -755,6 +755,49 @@ body, html {
   box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
 }
 
+/* Persona Switch Deck */
+.persona-switch-deck {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-glass-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-medium);
+  border-radius: 9999px;
+  padding: 4px 8px;
+}
+
+.persona-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-hairline);
+  color: var(--silver-400);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.8px;
+  padding: 5px 10px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: var(--trans-smooth);
+}
+
+.persona-pill:hover {
+  color: var(--silver-100);
+  border-color: var(--border-subtle);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.persona-pill.active {
+  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+  color: #0b0b0e;
+  font-weight: 700;
+  border-color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+.companion-link-btn {
+  text-decoration: none;
+}
+
 .dock-divider {
   width: 1px;
   height: 18px;

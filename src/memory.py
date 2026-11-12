@@ -9,7 +9,7 @@ class DayMemoryManager:
     Ensures the assistant maintains understanding of your world across sessions throughout the day.
     """
     def __init__(self, memory_dir: Path = Path(".memory")):
-        self.memory_dir = memory_dir
+        self.memory_dir = Path(memory_dir)
         self.memory_dir.mkdir(parents=True, exist_ok=True)
         self.today_str = datetime.now().strftime("%Y-%m-%d")
         self.memory_file = self.memory_dir / f"day_{self.today_str}.json"
@@ -77,17 +77,23 @@ class DayMemoryManager:
         self.current_session["turns"].append(turn)
         self.save()
 
-    def get_tutor_system_prompt(self) -> str:
+    def get_tutor_system_prompt(self, persona_key: str = "jarvis") -> str:
         """
         Builds the specialized Software Tutor & Co-Pilot system instruction
-        combined with today's contextual memory.
+        tailored to the active Persona and combined with today's contextual memory.
         """
+        from src.personas import get_persona
+        persona = get_persona(persona_key)
         now_time = datetime.now().strftime("%I:%M %p")
+
         lines = [
-            "ROLE & IDENTITY:",
-            "You are the user's real-time Software Tutor and interactive Co-Pilot.",
+            f"=== ACTIVE PERSONA: {persona.name.upper()} ({persona.title}) ===",
+            persona.system_instruction,
+            "",
+            "ENVIRONMENT & COLLABORATION:",
             f"Current local time: {now_time} on {self.today_str}.",
-            "You work collaboratively with the Vision Observer Agent, which feeds you visual snapshots of the user's screen in real time as they talk and work.",
+            "You work collaboratively with the Vision Observer Agent, which feeds you visual snapshots of the user's screen in real time as they work.",
+            "If the user circles a specific UI button, tool, or area with their mouse, focus your advice directly on that circled region.",
             "",
             "TUTORING & COLLABORATION PRINCIPLES:",
             "1. You are helping the user learn and master software (such as Blender, Unreal Engine, VS Code, Photoshop, Premiere, Figma, terminal commands, or new tools).",

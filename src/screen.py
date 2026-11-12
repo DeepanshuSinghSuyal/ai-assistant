@@ -198,3 +198,28 @@ class ScreenCaptureEngine:
         output = io.BytesIO()
         img.save(output, format="JPEG", quality=self.jpeg_quality, optimize=True)
         return output.getvalue()
+
+    def capture_rect_jpeg(self, left: int, top: int, width: int, height: int) -> bytes:
+        """Captures a specific user-circled region of the screen as JPEG bytes."""
+        # Ensure minimum bounding box size
+        width = max(int(width), 32)
+        height = max(int(height), 32)
+        left = int(left)
+        top = int(top)
+
+        bbox = {"left": left, "top": top, "width": width, "height": height}
+        try:
+            sct_img = self._sct.grab(bbox)
+            img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+        except Exception:
+            img = ImageGrab.grab(bbox=(left, top, left + width, top + height))
+
+        orig_w, orig_h = img.size
+        if orig_w > self.max_w or orig_h > self.max_h:
+            ratio = min(self.max_w / orig_w, self.max_h / orig_h)
+            new_size = (int(orig_w * ratio), int(orig_h * ratio))
+            img = img.resize(new_size, Image.Resampling.BILINEAR)
+
+        output = io.BytesIO()
+        img.save(output, format="JPEG", quality=self.jpeg_quality, optimize=True)
+        return output.getvalue()

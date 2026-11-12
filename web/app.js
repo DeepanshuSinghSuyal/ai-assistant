@@ -519,6 +519,7 @@ class PictureBookVisualizer {
         ? "ws://" + window.location.hostname + ":8766"
         : "ws://127.0.0.1:8766";
       const ws = new WebSocket(wsUrl);
+      this.telemetryWs = ws;
 
       ws.onopen = () => {
         if (statusText) statusText.innerText = "LIVE LINKED";
@@ -618,6 +619,16 @@ class PictureBookVisualizer {
 
     else if (eventType === "idle") {
       this.resetToIdle();
+    }
+
+    // -------------------------------------------------------------
+    // PERSONA SWITCH FROM BACKEND OR COMPANION
+    // -------------------------------------------------------------
+    else if (eventType === "persona_change") {
+      const pKey = data.key || data.persona;
+      if (pKey) {
+        this.switchPersonaUI(pKey);
+      }
     }
   }
 
@@ -892,6 +903,18 @@ class PictureBookVisualizer {
       this.simulateLiveLifecycleDemo();
     });
 
+    document.querySelectorAll(".persona-pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        const personaKey = pill.getAttribute("data-persona");
+        if (personaKey) {
+          this.switchPersonaUI(personaKey);
+          if (this.telemetryWs && this.telemetryWs.readyState === WebSocket.OPEN) {
+            this.telemetryWs.send(JSON.stringify({ type: "switch_persona", data: { persona: personaKey } }));
+          }
+        }
+      });
+    });
+
     const storyModeBtn = document.getElementById("mode-storybook-btn");
     const freeOrbitBtn = document.getElementById("mode-free-orbit-btn");
     const resetStageBtn = document.getElementById("reset-stage-btn");
@@ -915,6 +938,16 @@ class PictureBookVisualizer {
       storyModeBtn?.classList.add("active");
       freeOrbitBtn?.classList.remove("active");
       this.setChapter(0);
+    });
+  }
+
+  switchPersonaUI(personaKey) {
+    document.querySelectorAll(".persona-pill").forEach(pill => {
+      if (pill.getAttribute("data-persona") === personaKey) {
+        pill.classList.add("active");
+      } else {
+        pill.classList.remove("active");
+      }
     });
   }
 

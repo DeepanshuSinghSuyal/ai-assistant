@@ -27,9 +27,10 @@ class VisualizerTelemetryServer:
     Spins up a local HTTP server for the 3D visualization and an event
     WebSocket for real-time telemetry animation.
     """
-    def __init__(self, http_port: int = 8765, ws_port: int = 8766):
+    def __init__(self, http_port: int = 8765, ws_port: int = 8766, on_client_message = None):
         self.http_port = http_port
         self.ws_port = ws_port
+        self.on_client_message = on_client_message
         self.http_server: HTTPServer = None
         self.http_thread: threading.Thread = None
         self.ws_clients: Set = set()
@@ -46,7 +47,18 @@ class VisualizerTelemetryServer:
     async def _ws_handler(self, websocket):
         self.ws_clients.add(websocket)
         try:
-            await websocket.wait_closed()
+            async for raw in websocket:
+                try:
+                    payload = json.loads(raw)
+                    if self.on_client_message:
+                        if asyncio.iscoroutinefunction(self.on_client_message):
+                            await self.on_client_message(payload)
+                        else:
+                            self.on_client_message(payload)
+                except Exception:
+                    pass
+        except Exception:
+            pass
         finally:
             self.ws_clients.discard(websocket)
 
