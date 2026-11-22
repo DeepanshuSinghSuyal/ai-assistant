@@ -1,10 +1,15 @@
 import io
 import time
-import tkinter as tk
 from dataclasses import dataclass
 from typing import Optional, Dict, Any, List
 import mss
 from PIL import Image, ImageGrab
+
+# Optional Tkinter import (gracefully handled if blocked by Windows Application Control)
+try:
+    import tkinter as tk
+except (ImportError, OSError, Exception):
+    tk = None
 
 @dataclass
 class ScreenRegion:
@@ -23,41 +28,48 @@ class ScreenRegion:
         }
 
 class RegionSelectorGUI:
-    """A lightweight transparent fullscreen overlay to crop/snip a region with mouse drag."""
+    """A lightweight transparent fullscreen overlay to crop/snip a region with mouse drag, with ctypes fallback."""
     def __init__(self):
-        self.root = tk.Tk()
-        self.root.attributes("-alpha", 0.35)
-        self.root.attributes("-fullscreen", True)
-        self.root.attributes("-topmost", True)
-        self.root.config(bg="#11111b", cursor="crosshair")
-
-        self.canvas = tk.Canvas(self.root, cursor="crosshair", bg="#11111b", highlightthickness=0)
-        self.canvas.pack(fill="both", expand=True)
-
+        self.selected_region: Optional[ScreenRegion] = None
+        self.root = None
+        self.canvas = None
         self.start_x = None
         self.start_y = None
         self.cur_x = None
         self.cur_y = None
         self.rect_id = None
         self.text_id = None
-        self.selected_region: Optional[ScreenRegion] = None
 
-        # Banner text
-        sw = self.root.winfo_screenwidth()
-        self.canvas.create_text(
-            sw // 2, 40,
-            text="[ DRAG TO CROP SCREEN AREA ]  •  Press ENTER to confirm  •  ESC to cancel",
-            fill="#00ffcc",
-            font=("Consolas", 14, "bold")
-        )
+        if tk is not None:
+            try:
+                self.root = tk.Tk()
+                self.root.attributes("-alpha", 0.35)
+                self.root.attributes("-fullscreen", True)
+                self.root.attributes("-topmost", True)
+                self.root.config(bg="#11111b", cursor="crosshair")
 
-        self.canvas.bind("<ButtonPress-1>", self.on_press)
-        self.canvas.bind("<B1-Motion>", self.on_drag)
-        self.canvas.bind("<ButtonRelease-1>", self.on_release)
-        self.root.bind("<Return>", self.on_confirm)
-        self.root.bind("<Escape>", self.on_cancel)
+                self.canvas = tk.Canvas(self.root, cursor="crosshair", bg="#11111b", highlightthickness=0)
+                self.canvas.pack(fill="both", expand=True)
+
+                sw = self.root.winfo_screenwidth()
+                self.canvas.create_text(
+                    sw // 2, 40,
+                    text="[ DRAG TO CROP SCREEN AREA ]  •  Press ENTER to confirm  •  ESC to cancel",
+                    fill="#00ffcc",
+                    font=("Consolas", 14, "bold")
+                )
+
+                self.canvas.bind("<ButtonPress-1>", self.on_press)
+                self.canvas.bind("<B1-Motion>", self.on_drag)
+                self.canvas.bind("<ButtonRelease-1>", self.on_release)
+                self.root.bind("<Return>", self.on_confirm)
+                self.root.bind("<Escape>", self.on_cancel)
+            except Exception:
+                self.root = None
 
     def on_press(self, event):
+        if not self.canvas:
+            return
         self.start_x = event.x
         self.start_y = event.y
         if self.rect_id:
@@ -74,6 +86,8 @@ class RegionSelectorGUI:
         )
 
     def on_drag(self, event):
+        if not self.canvas:
+            return
         self.cur_x = event.x
         self.cur_y = event.y
         if self.rect_id:
@@ -89,6 +103,8 @@ class RegionSelectorGUI:
             self.canvas.itemconfig(self.text_id, text=f"{w} x {h} px")
 
     def on_release(self, event):
+        if not self.root:
+            return
         self.cur_x = event.x
         self.cur_y = event.y
         x1 = min(self.start_x, self.cur_x)
@@ -103,15 +119,78 @@ class RegionSelectorGUI:
             self.root.after(150, self.root.destroy)
 
     def on_confirm(self, event=None):
-        self.root.destroy()
+        if self.root:
+            self.root.destroy()
 
     def on_cancel(self, event=None):
         self.selected_region = None
-        self.root.destroy()
+        if self.root:
+            self.root.destroy()
 
     def get_selection(self) -> Optional[ScreenRegion]:
-        self.root.mainloop()
-        return self.selected_region
+        if self.root is not None:
+            try:
+                self.root.mainloop()
+                return self.selected_region
+            except Exception:
+                pass
+        return self._ctypes_selection_fallback()
+
+    def _ctypes_selection_fallback(self) -> Optional[ScreenRegion]:
+        """Console & mouse fallback when Tkinter is blocked by Windows Application Control."""
+        try:
+            import ctypes
+            from ctypes import wintypes
+            user32 = ctypes.windll.user32
+            print("\n[!] Tkinter GUI overlay is disabled by system policy.")
+            print("👉 Click 2 opposite corners on screen to crop (Point 1: Top-Left, Point 2: Bottom-Right)...", flush=True)
+
+            # Wait briefly for mouse release
+            time.sleep(0.3)
+            pt1 = wintypes.POINT()
+            clicked = False
+            start_wait = time.time()
+            while time.time() - start_wait < 12.0:
+                if user32.GetAsyncKeyState(0x01) & 0x8000:
+                    user32.GetCursorPos(ctypes.byref(pt1))
+                    clicked = True
+                    break
+                time.sleep(0.05)
+
+            if not clicked:
+                print("Crop selection cancelled.")
+                return None
+
+            print(f"✓ Point 1 captured at ({pt1.x}, {pt1.y}). Now click Point 2 (opposite corner)...", flush=True)
+            time.sleep(0.4)
+
+            pt2 = wintypes.POINT()
+            clicked2 = False
+            start_wait2 = time.time()
+            while time.time() - start_wait2 < 12.0:
+                if user32.GetAsyncKeyState(0x01) & 0x8000:
+                    user32.GetCursorPos(ctypes.byref(pt2))
+                    clicked2 = True
+                    break
+                time.sleep(0.05)
+
+            if not clicked2:
+                print("Crop selection cancelled.")
+                return None
+
+            x1 = min(pt1.x, pt2.x)
+            y1 = min(pt1.y, pt2.y)
+            x2 = max(pt1.x, pt2.x)
+            y2 = max(pt1.y, pt2.y)
+            w = x2 - x1
+            h = y2 - y1
+
+            if w > 32 and h > 32:
+                print(f"✓ Target area locked: {w}x{h} at ({x1}, {y1})\n")
+                return ScreenRegion(left=x1, top=y1, width=w, height=h, label=f"Region {w}x{h}")
+        except Exception:
+            pass
+        return None
 
 
 class ScreenCaptureEngine:
@@ -176,13 +255,22 @@ class ScreenCaptureEngine:
             img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
         except Exception:
             # Fallback to ImageGrab on Windows if BitBlt fails during heavy GPU init
-            bbox_tuple = (
-                monitor_bbox["left"],
-                monitor_bbox["top"],
-                monitor_bbox["left"] + monitor_bbox["width"],
-                monitor_bbox["top"] + monitor_bbox["height"],
-            )
-            img = ImageGrab.grab(bbox=bbox_tuple)
+            try:
+                bbox_tuple = (
+                    monitor_bbox["left"],
+                    monitor_bbox["top"],
+                    monitor_bbox["left"] + monitor_bbox["width"],
+                    monitor_bbox["top"] + monitor_bbox["height"],
+                )
+                img = ImageGrab.grab(bbox=bbox_tuple)
+            except Exception:
+                if getattr(self, "_last_frame", None) is not None:
+                    return self._last_frame
+                w = max(32, monitor_bbox.get("width", self.max_w))
+                h = max(32, monitor_bbox.get("height", self.max_h))
+                img = Image.new("RGB", (min(w, self.max_w), min(h, self.max_h)), (15, 15, 20))
+
+        self._last_frame = img
 
         orig_w, orig_h = img.size
         if orig_w > self.max_w or orig_h > self.max_h:
@@ -212,7 +300,10 @@ class ScreenCaptureEngine:
             sct_img = self._sct.grab(bbox)
             img = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
         except Exception:
-            img = ImageGrab.grab(bbox=(left, top, left + width, top + height))
+            try:
+                img = ImageGrab.grab(bbox=(left, top, left + width, top + height))
+            except Exception:
+                img = Image.new("RGB", (width, height), (15, 15, 20))
 
         orig_w, orig_h = img.size
         if orig_w > self.max_w or orig_h > self.max_h:
