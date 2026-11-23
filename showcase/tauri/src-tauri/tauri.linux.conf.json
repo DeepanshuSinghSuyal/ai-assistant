@@ -1,0 +1,34 @@
+{
+  "bundle": {
+    "resources": {
+      "onnxruntime/libonnxruntime.so": "libonnxruntime.so"
+    },
+    "externalBin": [
+      "binaries/roamies-voice",
+      "binaries/roamies-node"
+    ],
+    "linux": {
+      "appimage": {
+        "bundleMediaFramework": true
+      },
+      "deb": {
+        "depends": [
+          "libasound2",
+          "xdg-utils"
+        ],
+        "recommends": [
+          "libsecret-tools"
+        ]
+      },
+      "rpm": {
+        "depends": [
+          "alsa-lib",
+          "xdg-utils"
+        ],
+        "recommends": [
+          "libsecret"
+        ]
+      }
+    }
+  }
+}

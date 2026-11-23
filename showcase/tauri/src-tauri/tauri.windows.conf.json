@@ -1,0 +1,16 @@
+{
+  "bundle": {
+    "resources": {
+      "vcruntime/msvcp140.dll": "msvcp140.dll",
+      "vcruntime/msvcp140_1.dll": "msvcp140_1.dll",
+      "vcruntime/vcruntime140.dll": "vcruntime140.dll",
+      "vcruntime/vcruntime140_1.dll": "vcruntime140_1.dll",
+      "onnxruntime/onnxruntime.dll": "onnxruntime.dll"
+    },
+    "externalBin": [
+      "binaries/roamies-voice",
+      "binaries/roamies-hands",
+      "binaries/roamies-node"
+    ]
+  }
+}
