@@ -24,7 +24,7 @@
   };
 
   // ---------- pixel-art file icons: 12x12 grids in the teal family ----------
-  const INK = { k: '#051214', d: '#0e5c60', m: '#28c4b8', a: '#78ffe2', h: '#e6fffa' };
+  const INK = { k: '#0d1117', d: '#344050', m: '#8395a7', a: '#c8d6e5', h: '#f5f8fc' };
   const blank = () => Array.from({ length: 12 }, () => Array(12).fill('.'));
   const put = (g, cells, ch) => { for (const [r, c] of cells) if (g[r]?.[c] != null) g[r][c] = ch; };
   const row = (g, r, c0, c1, ch) => { for (let c = c0; c <= c1; c++) g[r][c] = ch; };

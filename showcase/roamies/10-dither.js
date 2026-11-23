@@ -956,8 +956,8 @@
   });
 
   Roamie.register(Roamie.ditherKit({
-    id: 'dither', label: 'Dither blob', bg: '#0f380f',
-    pal: [[15, 56, 15], [48, 98, 48], [139, 172, 15], [155, 188, 15]],
-    grid: 'rgba(15,56,15,0.18)',
+    id: 'dither', label: 'Dither blob', bg: '#0e1116',
+    pal: [[18, 22, 28], [60, 70, 84], [140, 155, 175], [210, 222, 238]],
+    grid: 'rgba(210,222,238,0.12)',
   }));
 })();

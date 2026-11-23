@@ -7,7 +7,7 @@
   const R = window.Roamie;
   if (!R || typeof document === 'undefined') return;
   // The pen's colours and size, the same as ink.js and voice/ink.swift.
-  const ACC = '#78ffe2', EDGE = 'rgba(3,39,34,0.6)', RADIUS = 2.8;
+  const ACC = '#c8d6e5', EDGE = 'rgba(20,25,35,0.6)', RADIUS = 2.8;
   const reducedMQ = matchMedia('(prefers-reduced-motion: reduce)');
   const loc = (x, y) => [x - (R.origin?.x ?? 0), y - (R.origin?.y ?? 0)];
   let cv = null, ctx = null, raf = 0, cur = null;

@@ -1,13 +1,15 @@
 {
-  "name": "roamies-app",
+  "name": "invanshu-assistant",
   "version": "0.1.50",
-  "description": "Roamies AI desktop companion with Google Gemini AI & Live Voice",
+  "description": "Invanshu AI desktop companion with Google Gemini AI & Live Voice, based on Roamies by KenKaiii",
+  "author": "Invanshu (Deepanshu Singh Suyal)",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node scripts/serve-showcase.mjs",
     "setup": "node scripts/setup-gemini.mjs",
     "download:app": "node scripts/download-desktop-app.mjs",
+    "install:app": "powershell -Command \"Start-Process .\\Roamies_Windows_Setup.exe\"",
     "test:sidecar": "cd showcase/tauri/sidecar && npm test"
   }
 }

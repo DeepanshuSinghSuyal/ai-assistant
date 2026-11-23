@@ -1,27 +1,23 @@
 <p align="center">
-  <img src="showcase/tauri/src-tauri/icons/128x128@2x.png" width="128" alt="Roamies icon">
+  <img src="showcase/tauri/src-tauri/icons/128x128@2x.png" width="128" alt="Invanshu AI icon">
 </p>
 
 <p align="center">
-  <img src="docs/art/hero.gif" alt="Roamies: JARVIS, a glowing globe of LED dots, ripples as it says &quot;At your service.&quot; beside a mouse cursor, while Roamie, Anime Girl, Sarah and Adrian wave and hop on either side">
+  <img src="docs/art/hero.gif" alt="Invanshu AI Assistant: JARVIS, a glowing globe of LED dots, ripples as it says &quot;At your service.&quot; beside a mouse cursor, while companions wave and hop on either side">
 </p>
 
 <p align="center">
-  <strong>A little buddy that lives on your screen and keeps you on track.</strong>
+  <strong>Invanshu AI Assistant — A desktop companion that lives on your screen and keeps you on track.</strong>
 </p>
 
 <p align="center">
-  <a href="https://github.com/KenKaiii/Roamies/releases/latest"><img src="https://img.shields.io/github/v/release/KenKaiii/Roamies?style=for-the-badge&label=Download&color=78ffe2" alt="Roamies desktop release"></a>
-  <a href="https://github.com/KenKaiii/Roamies/stargazers"><img src="https://img.shields.io/github/stars/KenKaiii/Roamies?style=for-the-badge&label=Stars&color=yellow" alt="Star Roamies on GitHub"></a>
-  <a href="https://github.com/KenKaiii/Roamies/releases"><img src="https://img.shields.io/github/downloads/KenKaiii/Roamies/total?style=for-the-badge&label=App%20downloads&color=2ecc71" alt="Desktop app downloads"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg?style=for-the-badge" alt="AGPL-3.0 License"></a>
-  <a href="https://youtube.com/@kenkaidoesai"><img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube"></a>
-  <a href="https://www.skool.com/kenkai"><img src="https://img.shields.io/badge/Skool-Raid%2B-78ffe2?style=for-the-badge" alt="Raid+ on Skool"></a>
-  <a href="https://www.kenkais.com"><img src="https://img.shields.io/badge/Website-kenkais.com-78ffe2?style=for-the-badge" alt="kenkais.com"></a>
+  <a href="https://github.com/DeepanshuSinghSuyal/ai-assistant"><img src="https://img.shields.io/badge/Author-Invanshu-blue.svg?style=for-the-badge" alt="Author Invanshu"></a>
+  <a href="https://github.com/DeepanshuSinghSuyal/ai-assistant/stargazers"><img src="https://img.shields.io/github/stars/DeepanshuSinghSuyal/ai-assistant?style=for-the-badge&label=Stars&color=yellow" alt="Star on GitHub"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-c8d6e5.svg?style=for-the-badge" alt="AGPL-3.0 License"></a>
+  <a href="NOTICE.md"><img src="https://img.shields.io/badge/Based%20on-Roamies-78ffe2.svg?style=for-the-badge" alt="Based on Roamies by KenKaiii"></a>
 </p>
 
-Roamies is a little AI buddy that lives on your desktop. It stays by your cursor, talks back in its own
-voice, keeps track of what you said you'd do and nudges you when it's due.
+**Invanshu AI Assistant** is an AI desktop companion maintained by **Invanshu (Deepanshu Singh Suyal)**, customized with a Metallic Silver theme and powered by Google Gemini Live Voice. It is based upon the open-source **Roamies** project created by **KenKaiii**. It stays by your cursor, talks back in real time, keeps track of your work, and helps you navigate your screen.
 
 > [!TIP]
 > **Want to build your own apps with AI?**

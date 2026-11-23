@@ -17,15 +17,18 @@ const kinds = {
 for (const [name, kind] of Object.entries(kinds)) assert.equal(fileKind(name), kind, name);
 assert.equal(fileKind('build', true), 'folder', 'a folder by its flag');
 assert.equal(KINDS.length, 13);
-// Each icon: a 12 x 12 grid of crisp cells in the teal family only, different from every other icon.
-const TEAL = new Set(['#051214', '#0e5c60', '#28c4b8', '#78ffe2', '#e6fffa']);
+// Each icon: a 12 x 12 grid of crisp cells in the palette family, different from every other icon.
+const PALETTE = new Set([
+  '#051214', '#0e5c60', '#28c4b8', '#78ffe2', '#e6fffa',
+  '#0d1117', '#344050', '#8395a7', '#c8d6e5', '#f5f8fc',
+]);
 const seen = new Set();
 for (const k of KINDS) {
   const svg = icon(k);
   assert.match(svg, /^<svg viewBox="0 0 12 12" width="36" height="36" shape-rendering="crispEdges" aria-hidden="true" focusable="false">/, k);
   const cells = [...svg.matchAll(/<rect x="(\d+)" y="(\d+)" width="1" height="1" fill="(#[0-9a-f]{6})"\/>/g)];
   assert.ok(cells.length > 20, `${k} has a shape`);
-  for (const [, x, y, fill] of cells) { assert.ok(+x < 12 && +y < 12, `${k} stays in its grid`); assert.ok(TEAL.has(fill), `${k}: ${fill} is a teal-family colour`); }
+  for (const [, x, y, fill] of cells) { assert.ok(+x < 12 && +y < 12, `${k} stays in its grid`); assert.ok(PALETTE.has(fill), `${k}: ${fill} is a valid palette colour`); }
   assert.ok(!seen.has(svg), `${k} looks different from the others`);
   seen.add(svg);
 }
