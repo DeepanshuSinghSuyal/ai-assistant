@@ -33,18 +33,18 @@
 }
 
 :root {
-  --bg: #051214;
-  --panel: #071a1c;
-  --ink: #e8fffa;
-  --ink-2: #b4d8d1;
-  --ink-3: #8ab8b0;
-  --accent: #78ffe2;
-  --accent-hi: #a8ffed;
-  --accent-lo: #5ce6c9;
-  --accent-ink: #032722;
-  --line: #1d4a48;
-  --line-hi: #2f7c74;
-  --line-hot: #4fbfa9;
+  --bg: #0d1117;
+  --panel: #161b22;
+  --ink: #f0f4f8;
+  --ink-2: #c5d0dc;
+  --ink-3: #95a3b3;
+  --accent: #c8d6e5;
+  --accent-hi: #e2ecf7;
+  --accent-lo: #9fb2c8;
+  --accent-ink: #0d1117;
+  --line: #303844;
+  --line-hi: #475466;
+  --line-hot: #8395a7;
   --danger: #ffb4a8;
   --ease: cubic-bezier(.2, .8, .2, 1);
   --display: "Doto", ui-monospace, monospace;
@@ -55,8 +55,8 @@
 html, body { margin: 0; height: 100%; }
 body {
   background:
-    radial-gradient(520px 420px at 150px 330px, rgba(40, 170, 150, 0.16), transparent 70%),
-    radial-gradient(circle at 50% 50%, rgba(80, 210, 190, 0.09) 0.9px, transparent 1.3px) 0 0 / 8px 8px,
+    radial-gradient(520px 420px at 150px 330px, rgba(160, 180, 205, 0.12), transparent 70%),
+    radial-gradient(circle at 50% 50%, rgba(200, 215, 235, 0.08) 0.9px, transparent 1.3px) 0 0 / 8px 8px,
     var(--bg);
   color: var(--ink);
   font: 400 12px/1.55 var(--mono);
@@ -442,6 +442,197 @@ input:focus-visible { outline: none; }
 .pen-keys .cap { --bc: var(--line-hot); --fill: #0c2a2c; min-width: 24px; height: 24px; padding: 0 5px 2px; font-size: 12px; transition: transform .08s steps(2); }
 /* Held down: the thick bottom edge goes (the key sinks) and it lights up, like the real keys while drawing. */
 .pen-keys.down .cap { --bc: var(--accent); --fill: #0e3a36; --bw: 2px; transform: translateY(2px); color: var(--accent); filter: drop-shadow(0 0 5px rgba(120, 255, 226, 0.55)); }
+
+/* ---------- Dual Mode Selector ---------- */
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+.mode-card {
+  --bc: var(--line);
+  --fill: var(--panel);
+  padding: 12px 14px;
+  cursor: pointer;
+  text-align: left;
+  border: 0;
+  color: var(--ink);
+  transition: all .15s var(--ease);
+}
+.mode-card:hover {
+  --bc: var(--line-hi);
+}
+.mode-card.on, .mode-card[aria-pressed="true"] {
+  --bc: var(--accent);
+  --fill: #171f2b;
+  box-shadow: 0 0 12px rgba(200, 214, 230, 0.15);
+}
+.mode-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.mode-title {
+  font: 700 13px/1.3 var(--mono);
+  color: var(--ink);
+}
+.mode-card.on .mode-title {
+  color: var(--accent-hi);
+}
+.mode-desc {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+.mode-pill {
+  font: 700 10px/1 var(--display);
+  padding: 2px 5px;
+  border-radius: 2px;
+  background: var(--line);
+  color: var(--accent);
+}
+
+/* ---------- Gemini Configuration Form ---------- */
+.gemini-panel, .offline-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.input-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.input-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--ink-2);
+}
+.model-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.tag-btn {
+  all: unset;
+  cursor: pointer;
+  font: 500 10.5px/1 var(--mono);
+  padding: 3px 6px;
+  background: #1e2632;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  border-radius: 2px;
+  transition: all .12s;
+}
+.tag-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 6px 10px;
+  background: rgba(22, 30, 42, 0.8);
+  border-left: 3px solid var(--accent);
+  color: var(--ink);
+}
+
+/* ---------- Handy-Style Hardware Diagnostics & Benchmark ---------- */
+.hw-box {
+  --bc: var(--line-hi);
+  --fill: #121720;
+  padding: 12px 14px;
+  margin-top: 4px;
+}
+.hw-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+.hw-header h3 {
+  margin: 0;
+  font: 700 12px/1.2 var(--mono);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.hw-specs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.hw-spec-item {
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+.hw-spec-item b {
+  display: block;
+  font-size: 12px;
+  color: var(--ink);
+  font-weight: 600;
+  margin-top: 1px;
+}
+.bench-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.bench-controls select {
+  flex: 1;
+  background: #161e29;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 6px 8px;
+  font: 500 12px var(--mono);
+}
+.bench-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+.bench-tile {
+  background: #171f2b;
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  text-align: center;
+}
+.bench-tile .num {
+  font: 700 16px/1.2 var(--display);
+  color: var(--accent-hi);
+}
+.bench-tile .lbl {
+  font-size: 10px;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.verdict-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 6px 10px;
+  font-size: 11px;
+  border-radius: 2px;
+  background: rgba(200, 214, 229, 0.08);
+  border: 1px solid var(--line-hi);
+  color: var(--accent-hi);
+}
 
 @media (prefers-reduced-motion: reduce) {
   .pen-demo .stroke.snapped .ink { animation: none; }

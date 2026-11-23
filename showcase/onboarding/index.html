@@ -55,30 +55,113 @@
     </section>
 
     <section class="step" id="step-ai" data-name="Connect AI" aria-labelledby="h-2" hidden>
-      <h1 id="h-2">Give me a brain</h1>
-      <p class="lead" id="ai-lead">Sign in with an AI account you have. Using GG Coder? You're already in.</p>
-      <div class="providers two" id="providers"></div>
-      <div class="providers keys" id="key-providers" hidden></div>
-      <form class="inline" id="code-form" hidden>
-        <label for="code-input" id="code-label">Paste the code from your browser</label>
-        <div class="field-row">
-          <span class="px field"><input id="code-input" autocomplete="off" spellcheck="false"></span>
-          <button class="px btn primary" type="submit">Submit</button>
+      <h1 id="h-2">Choose Your AI Brain</h1>
+      <p class="lead" id="ai-lead">Pick between real-time Online Gemini Live or 100% private Offline AI.</p>
+
+      <!-- Dual Mode Selector -->
+      <div class="mode-grid" role="radiogroup" aria-label="AI Mode">
+        <button class="px mode-card on" type="button" id="mode-online" role="radio" aria-checked="true">
+          <div class="mode-head">
+            <span class="mode-title">🌐 Online AI</span>
+            <span class="mode-pill">LIVE VOICE</span>
+          </div>
+          <p class="mode-desc">Google Gemini 3.1 Live · 24kHz Audio + Multimodal Screen Vision.</p>
+        </button>
+        <button class="px mode-card" type="button" id="mode-offline" role="radio" aria-checked="false">
+          <div class="mode-head">
+            <span class="mode-title">💻 Offline AI</span>
+            <span class="mode-pill">PRIVATE</span>
+          </div>
+          <p class="mode-desc">100% Local on Device · Text-Only, zero internet, runs on your laptop.</p>
+        </button>
+      </div>
+
+      <!-- Online Gemini Panel -->
+      <div class="gemini-panel" id="online-panel">
+        <div class="input-block">
+          <div class="input-label-row">
+            <label for="gemini-key-input">Google Gemini API Key</label>
+            <button class="link" type="button" id="gemini-link">Get a free key from AI Studio</button>
+          </div>
+          <div class="field-row">
+            <span class="px field" style="flex:1;"><input id="gemini-key-input" type="password" placeholder="Paste your Google Gemini API key" autocomplete="off" spellcheck="false" maxlength="1000"></span>
+            <button class="px btn primary" type="button" id="gemini-save-btn">Connect</button>
+          </div>
         </div>
-      </form>
-      <form class="inline" id="key-form" hidden>
-        <div class="label-row">
-          <label for="key-input" id="key-label">API key</label>
-          <button class="link" type="button" id="key-link" hidden>Get a key</button>
+
+        <div class="input-block">
+          <div class="input-label-row">
+            <label for="gemini-model-input">Gemini Live Model</label>
+            <span class="hint">Real-time voice preview</span>
+          </div>
+          <div class="field-row">
+            <span class="px field" style="flex:1;"><input id="gemini-model-input" type="text" value="models/gemini-3.1-flash-live-preview" autocomplete="off" spellcheck="false"></span>
+          </div>
+          <div class="model-suggestions">
+            <button type="button" class="tag-btn" data-model="models/gemini-3.1-flash-live-preview">models/gemini-3.1-flash-live-preview</button>
+            <button type="button" class="tag-btn" data-model="gemini-2.0-flash">gemini-2.0-flash</button>
+            <button type="button" class="tag-btn" data-model="gemini-1.5-flash">gemini-1.5-flash</button>
+          </div>
         </div>
-        <div class="field-row">
-          <span class="px field"><input id="key-input" type="password" placeholder="Paste API key" autocomplete="off" spellcheck="false" maxlength="1000"></span>
-          <button class="px btn primary" type="submit" id="key-save">Save</button>
+
+        <div class="status-pill" id="gemini-status" hidden>
+          <span class="led on"></span>
+          <span id="gemini-status-text">Gemini Live Connected</span>
         </div>
-      </form>
-      <button class="link" type="button" id="key-toggle">Use an API key instead</button>
+      </div>
+
+      <!-- Offline Panel & Handy-Style Hardware Benchmark -->
+      <div class="offline-panel" id="offline-panel" hidden>
+        <div class="px hw-box">
+          <div class="hw-header">
+            <h3>💻 Laptop Hardware Diagnostic</h3>
+            <span class="mode-pill" id="hw-status-badge">READY</span>
+          </div>
+          <div class="hw-specs">
+            <div class="hw-spec-item">CPU Cores: <b id="hw-cpu">-</b></div>
+            <div class="hw-spec-item">System RAM: <b id="hw-ram">-</b></div>
+            <div class="hw-spec-item">Graphics: <b id="hw-gpu">-</b></div>
+          </div>
+
+          <div class="hw-header" style="margin-top:10px;">
+            <h3>⚡ Model Speed Benchmark</h3>
+            <span class="hint">Test token & speech latency</span>
+          </div>
+
+          <div class="bench-controls">
+            <select id="bench-model-select">
+              <option value="llama-3.2-1b">Llama 3.2 1B (Ultra-Light · ~1.1 GB RAM)</option>
+              <option value="llama-3.2-3b">Llama 3.2 3B (Balanced · ~2.2 GB RAM)</option>
+              <option value="qwen-2.5-1.5b">Qwen 2.5 1.5B (Fast Reasoning · ~1.3 GB RAM)</option>
+              <option value="qwen-2.5-3b">Qwen 2.5 3B (Deep Reasoning · ~2.5 GB RAM)</option>
+              <option value="gemma-2-2b">Gemma 2 2B (Google Open Weights · ~1.8 GB RAM)</option>
+            </select>
+            <button class="px btn primary" type="button" id="bench-run-btn">Run Speed Test</button>
+          </div>
+
+          <div class="bench-grid">
+            <div class="bench-tile">
+              <div class="num" id="bench-ttft">-- ms</div>
+              <div class="lbl">First Token (TTFT)</div>
+            </div>
+            <div class="bench-tile">
+              <div class="num" id="bench-speed">-- tok/s</div>
+              <div class="lbl">Throughput Speed</div>
+            </div>
+            <div class="bench-tile">
+              <div class="num" id="bench-stt">-- ms</div>
+              <div class="lbl">Speech-to-Text</div>
+            </div>
+          </div>
+
+          <div class="verdict-banner" id="bench-verdict">
+            <span>ℹ️ Click "Run Speed Test" to benchmark how fast this model responds on your laptop.</span>
+          </div>
+        </div>
+      </div>
+
       <p class="error" id="login-error" role="alert" hidden></p>
-      <p class="note">Your messages, and screenshots when you ask about the screen, go to the AI provider you pick, under its privacy policy.</p>
+      <p class="note">Online mode connects to Google Gemini with your API key. Offline mode runs 100% locally with zero internet communication.</p>
     </section>
 
     <section class="step" id="step-voice" data-name="Replies" aria-labelledby="h-voice" hidden>

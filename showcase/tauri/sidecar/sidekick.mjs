@@ -2852,8 +2852,13 @@ async function onGuide(m) {
   else if (m.type === 'ob_studiovoice' && typeof m.voice === 'string') setStudioVoice(m.voice);
   else if (m.type === 'ob_studiocheck') { await speech.checkLocal(); obState(); }
   else if ((m.type === 'ob_fishkey' || m.type === 'ob_geminikey') && typeof m.key === 'string') {
+    if (m.model) { config.geminiLiveModel = m.model; saveConfig(); }
     const note = (text, bad, p) => ob({ kind: 'fish', ok: !bad, error: bad ? text : null, ...(bad && p ? linked(p) : {}) });
     await voiceKeyLogin({ provider: m.type === 'ob_geminikey' ? 'gemini' : 'fish', given: m.key.slice(0, 1000), thenVoice: true, note }).catch((e) => { const p = problem('key', e, { store: KEY_STORE }); note(p.text, true, p); });
+  }
+  else if (m.type === 'set_gemini_live_model' && typeof m.model === 'string') {
+    config.geminiLiveModel = m.model;
+    saveConfig();
   }
   else if (m.type === 'ob_login' && OAUTH[m.provider]) oauthLogin(m.provider, typeof m.id === 'string' ? m.id.slice(0, 40) : undefined);
   else if (m.type === 'ob_login_cancel') cancelLogin(typeof m.id === 'string' ? m.id : undefined);

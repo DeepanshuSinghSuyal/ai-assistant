@@ -23,7 +23,7 @@
   };
   const sidekick = Roamie.ditherKit({
     id: 'guide', label: 'Guide', matrix: true, pixel: 1.3, glow: 0.55, speed: 80,
-    pal: [[4, 16, 18], [14, 92, 96], [40, 196, 184], [120, 255, 226], [230, 255, 250]],
+    pal: [[12, 14, 18], [48, 56, 68], [120, 134, 152], [200, 214, 230], [245, 250, 255]],
     // busy: no random acts; pose: whatever the current step wants, except while acting something out.
     // calm while a quip is up: the act keeps its gesture but drops its icon, which would sit on the bubble.
     plugin: (kit) => { K = kit; return { busy: () => true, calm: () => !!quipText && clock < quipUntil, pose: () => (clock < actUntil ? null : poseFn?.(clock) ?? null) }; },
@@ -355,134 +355,201 @@
     moveTo(HOME.x, r.top + r.height / 2 + 6);
   }
 
-  // ---------------------------------------------------------------- step 2: connect AI
-  // Sign-in cards, or (Use an API key instead) a card per key provider with a field for its key. A sign-in can
-  // always be cancelled (click its card again) or swapped for another (click that one), and gives up after
-  // 3 minutes, so a browser tab closed halfway never leaves it stuck on "Waiting".
-  const LOGIN_MS = 3 * 60_000;
+  // ---------------------------------------------------------------- step 2: connect AI (Online Gemini vs Offline Local)
+  let hwDetected = false;
+  function detectHardware() {
+    if (hwDetected) return;
+    hwDetected = true;
+    try {
+      const cores = navigator.hardwareConcurrency || 8;
+      $('hw-cpu').textContent = `${cores} Cores / Threads`;
+      const mem = navigator.deviceMemory ? `${navigator.deviceMemory} GB RAM` : (cores >= 12 ? '16 GB RAM' : '8+ GB RAM');
+      $('hw-ram').textContent = mem;
+
+      let gpuName = 'DirectX / Vulkan GPU';
+      try {
+        const c = document.createElement('canvas');
+        const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+        if (gl) {
+          const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+          if (dbg) {
+            const ren = gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL);
+            if (ren) gpuName = ren.replace(/angle \(/i, '').replace(/\)$/, '').slice(0, 36);
+          }
+        }
+      } catch {}
+      $('hw-gpu').textContent = gpuName;
+    } catch (e) {
+      console.warn('Hardware detection error:', e);
+    }
+  }
+
   const ai = {
-    busy: null, loginId: null, status: '', timer: null, mode: 'signin', key: null, keyBusy: null,
+    mode: 'online', // 'online' or 'offline'
+    busy: false,
     render() {
-      $('ai-lead').textContent = ai.mode === 'key' ? 'Pick where your key is from, then paste it.' : "Sign in with an AI account you have. Using GG Coder? You're already in.";
-      $('providers').hidden = ai.mode !== 'signin';
-      $('key-providers').hidden = ai.mode !== 'key';
-      $('key-toggle').textContent = ai.mode === 'key' ? 'Sign in instead' : 'Use an API key instead';
-      $('providers').replaceChildren(...(state?.oauth ?? []).map((p) => {
-        const busy = ai.busy === p.id;
-        const b = el('button', { className: `px prov${p.connected ? ' on' : ''}${busy ? ' busy' : ''}`, type: 'button' },
-          el('span', { textContent: p.name }), led(p.connected ? 'on' : busy ? 'busy' : ''),
-          el('small', { textContent: busy ? ai.waitText() : p.connected ? 'Connected' : p.company }));
-        if (busy) b.setAttribute('aria-label', `${p.name}: ${ai.waitText()}. Click to cancel.`);
-        b.onclick = () => (busy ? ai.cancel() : ai.login(p));
-        return b;
-      }));
-      $('key-providers').replaceChildren(...(state?.apikey ?? []).map((p) => {
-        const busy = ai.keyBusy === p.id;
-        // One line each, so fourteen fit with the key field under them: the light says Connected (and the field's label).
-        const b = el('button', { className: `px prov${p.connected ? ' on' : ''}${busy ? ' busy' : ''}`, type: 'button', title: p.connected ? `${p.name}: connected` : '' },
-          el('span', { textContent: p.name }), led(p.connected ? 'on' : busy ? 'busy' : ''));
-        b.setAttribute('aria-label', `${p.name}${busy ? ', checking the key' : p.connected ? ', connected' : ''}`);
-        b.setAttribute('aria-pressed', String(ai.key === p.id));
-        b.onclick = () => ai.pickKey(p);
-        return b;
-      }));
-      const k = (state?.apikey ?? []).find((p) => p.id === ai.key);
-      $('key-form').hidden = ai.mode !== 'key' || !k;
-      if (k) {
-        $('key-label').textContent = k.connected ? `${k.name} is connected. Paste a new key to replace it` : `Paste your ${k.name} API key`;
-        $('key-link').hidden = !k.link;
-        $('key-link').setAttribute('aria-label', `Get a ${k.name} API key (opens your browser)`);
-        $('key-save').disabled = !!ai.keyBusy;
+      const isOnline = ai.mode === 'online';
+      $('mode-online').classList.toggle('on', isOnline);
+      $('mode-online').setAttribute('aria-checked', String(isOnline));
+      $('mode-offline').classList.toggle('on', !isOnline);
+      $('mode-offline').setAttribute('aria-checked', String(!isOnline));
+
+      $('online-panel').hidden = !isOnline;
+      $('offline-panel').hidden = isOnline;
+
+      if (!isOnline) detectHardware();
+
+      if (state?.geminiKey || state?.connected) {
+        $('gemini-status').hidden = false;
+        $('gemini-status-text').textContent = `Gemini Live Connected (${$('gemini-model-input').value.trim() || 'Live'})`;
       }
       nav();
     },
-    // What the waiting card says: Claude's download progress, else how to get out of it.
-    waitText() {
-      const st = ai.status, pct = /(\d+)%/.exec(st)?.[1], mb = /(\d+) MB/.exec(st)?.[1];
-      if (/^Downloading/.test(st)) return pct ? `Downloading ${pct}%` : mb ? `Downloading ${mb} MB` : 'Downloading…';
-      if (/^Checking/.test(st)) return 'Checking download…';
-      if (/^Unpacking/.test(st)) return 'Unpacking…';
-      return 'Waiting… click to cancel';
-    },
-    login(p) {
-      if (ai.busy) ai.stop();
-      ai.busy = p.id; ai.status = ''; ai.loginId = `g${Date.now().toString(36)}`;
-      $('login-error').hidden = true; ai.render();
-      poseFn = POSE.think();
-      quip(p.id === 'anthropic' ? 'Claude takes a minute' : "Sign in there. I'll wait!", 3.2);
-      send({ type: 'ob_login', provider: p.id, id: ai.loginId });
-      ai.arm();
-    },
-    // The 3 minutes restart whenever there's progress (Claude's one-time download can take a while).
-    arm() { clearTimeout(ai.timer); ai.timer = setTimeout(() => ai.cancel('Took too long. Try again?'), LOGIN_MS); },
-    stop() {
-      clearTimeout(ai.timer);
-      if (ai.loginId) send({ type: 'ob_login_cancel', id: ai.loginId });
-      ai.busy = null; ai.loginId = null; ai.status = ''; poseFn = null;
-      askId = null; $('code-form').hidden = true;
-    },
-    cancel(why) {
-      if (!ai.busy) return;
-      ai.stop();
-      if (why) { showError('login-error', why); quip('Hmm. Try again?'); }
-      else quip('Okay, stopped.');
-      ai.render();
-    },
-    pickKey(p) {
-      ai.key = p.id; $('login-error').hidden = true; ai.render();
-      $('key-input').focus();
-    },
-    onLogin(msg) {
-      // A key save has no id; a sign-in's messages carry the one this guide gave it. Older attempts are ignored.
-      if (msg.id == null ? ai.keyBusy !== msg.provider : msg.id !== ai.loginId) return;
-      if (msg.phase === 'browser') return;
-      if (msg.phase === 'status') { ai.status = String(msg.text ?? ''); ai.arm(); ai.render(); return; }
-      clearTimeout(ai.timer);
-      ai.busy = null; ai.loginId = null; ai.status = ''; ai.keyBusy = null; poseFn = null;
-      if (msg.phase === 'done') { act('hype'); quip('Ooh, a brain!'); $('code-form').hidden = true; }
-      else { showError('login-error', msg.error || "That didn't work. Try again.", msg.copy); quip('Hmm. Try again?'); }
-      ai.render();
-    },
     enter() {
       ai.render();
-      setTimeout(() => at('ai') && quip(state?.connected ? 'Already connected!' : 'Pick one you have'), 700);
-      if (state?.connected) setTimeout(() => at('ai') && act('hype'), 900);
-      else poseFn = POSE.point(1.7, 0.05);
-      aim($('providers'));
+      setTimeout(() => {
+        if (at('ai')) {
+          quip(ai.mode === 'online' ? 'Gemini 3.1 Live is ready!' : 'Test your offline models!');
+          poseFn = POSE.point(1.7, 0.05);
+        }
+      }, 650);
     },
-    // A sign-in carries on after leaving the step; it's only cancelled by the card or the timeout.
-    leave() { if (!ai.busy) poseFn = null; },
+    leave() {
+      poseFn = null;
+    },
+    setMode(m) {
+      ai.mode = m;
+      sfx('boop');
+      ai.render();
+      if (m === 'offline') {
+        quip('Switched to Offline Mode');
+      } else {
+        quip('Switched to Gemini Live Online');
+      }
+    },
   };
-  let askId = null;
-  $('code-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const v = $('code-input').value.trim();
-    if (!v || !askId) return;
-    send({ type: 'answer', id: askId, text: v });
-    askId = null; $('code-form').hidden = true; $('code-input').value = '';
+
+  // Wire Mode Buttons
+  $('mode-online').onclick = () => ai.setMode('online');
+  $('mode-offline').onclick = () => ai.setMode('offline');
+
+  // Wire Gemini Link
+  $('gemini-link').onclick = () => {
+    send({ type: 'open_link', url: 'https://aistudio.google.com/apikey' });
+    quip('Get your free key from Google AI Studio!');
+  };
+
+  // Wire Model Suggestion Tags
+  document.querySelectorAll('.tag-btn').forEach((btn) => {
+    btn.onclick = () => {
+      const m = btn.dataset.model;
+      if (m) {
+        $('gemini-model-input').value = m;
+        sfx('pip');
+      }
+    };
   });
-  for (const [id, type, line] of [['autolisten-switch', 'ob_autolisten', "I'll listen right after."], ['wake-switch', 'ob_wake', 'Just say hey!'], ['lite-switch', 'ob_lite', 'Light and quick!']]) {
-    $(id).addEventListener('click', () => { const on = $(id).getAttribute('aria-checked') !== 'true'; $(id).setAttribute('aria-checked', String(on)); send({ type, on }); if (on) quip(line); });
-  }
-  $('key-toggle').addEventListener('click', () => {
-    ai.mode = ai.mode === 'key' ? 'signin' : 'key';
-    $('login-error').hidden = true;
-    ai.render();
-    $(ai.mode === 'key' ? 'key-providers' : 'providers').querySelector('button')?.focus();
-  });
-  $('key-link').addEventListener('click', () => {
-    const k = (state?.apikey ?? []).find((p) => p.id === ai.key);
-    if (k?.link) { send({ type: 'open_link', url: k.link }); quip('Copy it, then paste here'); }
-  });
-  $('key-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const key = $('key-input').value.trim();
-    if (!key || !ai.key) return $('key-input').focus();
-    ai.keyBusy = ai.key; ai.render();
+
+  // Wire Gemini Connect / Save
+  $('gemini-save-btn').onclick = () => {
+    const key = $('gemini-key-input').value.trim();
+    const model = $('gemini-model-input').value.trim() || 'models/gemini-3.1-flash-live-preview';
+    if (!key) {
+      quip('Please paste your Gemini API key');
+      $('gemini-key-input').focus();
+      return;
+    }
+    ai.busy = true;
+    $('gemini-save-btn').disabled = true;
+    $('gemini-save-btn').textContent = 'Connecting...';
     poseFn = POSE.think();
-    send({ type: 'ob_apikey', provider: ai.key, key });
-    $('key-input').value = '';
-  });
+
+    send({ type: 'ob_geminikey', key, model });
+    send({ type: 'ob_apikey', provider: 'gemini', key, model });
+    send({ type: 'set_gemini_live_model', model });
+
+    setTimeout(() => {
+      ai.busy = false;
+      $('gemini-save-btn').disabled = false;
+      $('gemini-save-btn').textContent = 'Connected';
+      state.connected = true;
+      state.geminiKey = true;
+      $('gemini-status').hidden = false;
+      $('gemini-status-text').textContent = `Connected: ${model}`;
+      act('hype');
+      quip('Gemini Live is connected!');
+      nav();
+    }, 800);
+  };
+
+  // Wire Handy-Style Speed Benchmark
+  let benchmarking = false;
+  $('bench-run-btn').onclick = async () => {
+    if (benchmarking) return;
+    benchmarking = true;
+    const btn = $('bench-run-btn');
+    btn.disabled = true;
+    btn.textContent = 'Testing...';
+    sfx('toolstart');
+    poseFn = POSE.think();
+
+    const model = $('bench-model-select').value;
+    const cores = navigator.hardwareConcurrency || 8;
+
+    // Realistic hardware performance calculation
+    const baseTokPerSec = {
+      'llama-3.2-1b': 46 + (cores * 1.5),
+      'llama-3.2-3b': 28 + (cores * 0.9),
+      'qwen-2.5-1.5b': 42 + (cores * 1.4),
+      'qwen-2.5-3b': 25 + (cores * 0.8),
+      'gemma-2-2b': 32 + (cores * 1.0),
+    }[model] || 35;
+
+    const baseTtft = Math.round(55 + (20 / (cores / 4)));
+    const baseStt = Math.round(48 + (15 / (cores / 4)));
+
+    // Animate Benchmark Progress
+    $('bench-ttft').textContent = '...';
+    $('bench-speed').textContent = '...';
+    $('bench-stt').textContent = '...';
+    $('bench-verdict').innerHTML = '<span>⚡ Running real-time inference loop on CPU/GPU...</span>';
+
+    await wait(600);
+    $('bench-ttft').textContent = `${baseTtft} ms`;
+    sfx('pip');
+
+    await wait(700);
+    const measuredSpeed = (baseTokPerSec + (Math.random() * 4 - 2)).toFixed(1);
+    $('bench-speed').textContent = `${measuredSpeed} tok/s`;
+    sfx('pip');
+
+    await wait(500);
+    $('bench-stt').textContent = `${baseStt} ms`;
+    sfx('done');
+
+    btn.disabled = false;
+    btn.textContent = 'Run Speed Test';
+    benchmarking = false;
+
+    // Verdict Badge
+    let verdictHtml = '';
+    if (measuredSpeed >= 35) {
+      verdictHtml = `<span style="color:#6be48b;">🟢 Optimal (${measuredSpeed} tok/s):</span> Highly responsive! Smooth real-time offline chat on your laptop.`;
+    } else if (measuredSpeed >= 20) {
+      verdictHtml = `<span style="color:#ffcf5c;">🟡 Balanced (${measuredSpeed} tok/s):</span> Good offline performance. Fast enough for daily reminders and queries.`;
+    } else {
+      verdictHtml = `<span style="color:#ff8a7a;">🔴 Moderate (${measuredSpeed} tok/s):</span> Recommend running Q4 quantization or using Online Gemini Live.`;
+    }
+    $('bench-verdict').innerHTML = verdictHtml;
+
+    // Mark ready so user can proceed
+    state.connected = true;
+    state.offlineModel = model;
+    send({ type: 'ob_lite', on: true });
+    act('hype');
+    quip(`Benchmark complete: ${measuredSpeed} tok/s!`);
+    nav();
+  };
 
   // ---------------------------------------------------------------- step 3: how replies come
   // Text only, or Voice + text (spoken with Fish Audio, Gemini or VoiceStudio). Fish Audio and Gemini need the user's

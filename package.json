@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "start": "node scripts/serve-showcase.mjs",
+    "start:setup": "node scripts/serve-showcase.mjs --onboarding",
     "setup": "node scripts/setup-gemini.mjs",
     "download:app": "node scripts/download-desktop-app.mjs",
     "install:app": "powershell -Command \"Start-Process .\\Roamies_Windows_Setup.exe\"",

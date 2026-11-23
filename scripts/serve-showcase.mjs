@@ -32,6 +32,7 @@ const MIMES = {
 const server = http.createServer((req, res) => {
   let reqPath = req.url.split('?')[0];
   if (reqPath === '/' || reqPath === '') reqPath = '/desktop.html';
+  if (reqPath === '/onboarding' || reqPath === '/onboarding/') reqPath = '/onboarding/index.html';
 
   const filePath = path.join(SHOWCASE, reqPath);
 
@@ -63,11 +64,13 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, '127.0.0.1', () => {
-  const url = `http://localhost:${PORT}/desktop.html`;
+  const isOnboarding = process.argv.includes('--onboarding');
+  const target = isOnboarding ? '/onboarding/index.html' : '/desktop.html';
+  const url = `http://localhost:${PORT}${target}`;
   console.log(`\n======================================================`);
-  console.log(`⚡ ROAMIES DESKTOP STAGE RUNNING AT:`);
-  console.log(`   ${url}`);
-  console.log(`   Control Panel: http://localhost:${PORT}/panel/index.html`);
+  console.log(`⚡ INVANSHU AI ASSISTANT RUNNING AT:`);
+  console.log(`   Desktop Stage: http://localhost:${PORT}/desktop.html`);
+  console.log(`   Setup & Benchmark: http://localhost:${PORT}/onboarding/index.html`);
   console.log(`======================================================\n`);
 
   // Auto open browser on Windows
