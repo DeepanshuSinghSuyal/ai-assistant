@@ -21,6 +21,7 @@ assert.equal(KINDS.length, 13);
 const PALETTE = new Set([
   '#051214', '#0e5c60', '#28c4b8', '#78ffe2', '#e6fffa',
   '#0d1117', '#344050', '#8395a7', '#c8d6e5', '#f5f8fc',
+  '#0b0d1a', '#881337', '#f43f5e', '#38bdf8', '#f0f9ff',
 ]);
 const seen = new Set();
 for (const k of KINDS) {

@@ -21,7 +21,7 @@
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 
   // ---------- look ----------
-  const INK = '#f0f4f8', ACCENT = '#c8d6e5';
+  const INK = '#f0f9ff', ACCENT = '#38bdf8';
   // The LED levels JARVIS is drawn in (12-sidekick.js), level 0 never drawn here: the capsule is the dark.
   const PAL = [null, 'rgb(14,92,96)', 'rgb(40,196,184)', 'rgb(120,255,226)', 'rgb(230,255,250)'];
   const L = PAL.length - 1;

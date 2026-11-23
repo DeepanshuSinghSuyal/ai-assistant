@@ -9,10 +9,10 @@
 
   // ---------------------------------------------------------------- look
   const P = 4, MONO = '"Martian Mono", "Roamies Arabic", ui-monospace, monospace', DOTO = '"Doto", "Martian Mono", "Roamies Arabic", ui-monospace, monospace';
-  const ACC = '#c8d6e5', HOT = '#f5f8fc', MID = '#8395a7', DEEP = '#344050', EDGE = 'rgba(20,25,35,0.6)';
-  const GLASS = 'rgba(18,22,28,0.94)', TEXT = '#f0f4f8', DIM = '#95a3b3', INKDARK = '#0d1117';
-  const TONES = { accent: ACC, teal: '#c8d6e5', silver: '#c8d6e5', amber: '#ffcf5c', coral: '#ff8a7a', lilac: '#b9a4ff', sky: '#7cc8ff', lime: '#b6f36b', red: '#ff6b6b', white: '#f5f8fc' };
-  const LED = ['#0d1117', '#344050', '#8395a7', '#c8d6e5', '#f5f8fc'];
+  const ACC = '#38bdf8', HOT = '#f0f9ff', MID = '#0284c7', RED = '#f43f5e', DEEP = '#881337', EDGE = 'rgba(136,19,55,0.65)';
+  const GLASS = 'rgba(11,13,26,0.95)', TEXT = '#f0f9ff', DIM = '#94a3b8', INKDARK = '#0b0d1a';
+  const TONES = { accent: ACC, blue: '#38bdf8', red: '#f43f5e', crimson: '#f43f5e', teal: '#38bdf8', silver: '#c8d6e5', amber: '#ffcf5c', coral: '#f43f5e', lilac: '#c084fc', sky: '#38bdf8', lime: '#4ade80', white: '#f0f9ff' };
+  const LED = ['#0b0d1a', '#881337', '#f43f5e', '#38bdf8', '#f0f9ff'];
   const B4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
   const tone = (t) => TONES[t] || ACC;
   const now = () => performance.now() / 1000;

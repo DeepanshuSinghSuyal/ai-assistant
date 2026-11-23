@@ -22,7 +22,7 @@
 
   const css = `
 .ah-col { position: fixed; left: 0; top: 0; z-index: 5; width: 300px; display: flex; flex-direction: column; gap: 8px; pointer-events: none; will-change: transform; }
-.ah, .ahs { --ink: #f0f4f8; --ink-2: #c5d0dc; --ink-3: #95a3b3; --accent: #c8d6e5; --line-hi: #475466; --line-hot: #8395a7; --note: #e9a196;
+.ah, .ahs { --ink: #f0f9ff; --ink-2: #cbd5e1; --ink-3: #94a3b8; --accent: #38bdf8; --line-hi: #6d28d9; --line-hot: #f43f5e; --note: #fb7185;
   --s: 2px; --ease: cubic-bezier(.2, .8, .2, 1);
   --notch: polygon(
     calc(var(--s) * 2) 0, calc(100% - var(--s) * 2) 0, calc(100% - var(--s) * 2) var(--s), calc(100% - var(--s)) var(--s),
@@ -31,10 +31,10 @@
     calc(100% - var(--s) * 2) calc(100% - var(--s)), calc(100% - var(--s) * 2) 100%, calc(var(--s) * 2) 100%,
     calc(var(--s) * 2) calc(100% - var(--s)), var(--s) calc(100% - var(--s)), var(--s) calc(100% - var(--s) * 2),
     0 calc(100% - var(--s) * 2), 0 calc(var(--s) * 2), var(--s) calc(var(--s) * 2), var(--s) var(--s), calc(var(--s) * 2) var(--s));
-  pointer-events: auto; cursor: default; box-sizing: border-box; padding: 2px; background: var(--line-hot); color: #0d1117; clip-path: var(--notch);
+  pointer-events: auto; cursor: default; box-sizing: border-box; padding: 2px; background: var(--line-hot); color: #0b0d1a; clip-path: var(--notch);
   font: 400 12px/1.45 "Martian Mono", "Roamies Arabic", ui-monospace, Menlo, monospace;
-  filter: drop-shadow(0 0 10px rgba(200, 214, 229, .22)) drop-shadow(0 8px 22px rgba(0, 0, 0, .45)); }
-.ah-in, .ahs-in { background: rgba(18, 22, 28, .97); color: var(--ink); clip-path: var(--notch); }
+  filter: drop-shadow(0 0 10px rgba(244, 63, 94, .25)) drop-shadow(0 8px 22px rgba(0, 0, 0, .5)); }
+.ah-in, .ahs-in { background: rgba(11, 13, 26, .97); color: var(--ink); clip-path: var(--notch); }
 /* Panels unfold on the way in and only dissolve on the way out: the entrance is a one-way keyframe, the exit
    is just the opacity transition (260 ms). */
 .ah { transform-origin: top right; opacity: 0; transition: opacity .26s ease-out; }

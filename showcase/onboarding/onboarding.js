@@ -23,7 +23,7 @@
   };
   const sidekick = Roamie.ditherKit({
     id: 'guide', label: 'Guide', matrix: true, pixel: 1.3, glow: 0.55, speed: 80,
-    pal: [[12, 14, 18], [48, 56, 68], [120, 134, 152], [200, 214, 230], [245, 250, 255]],
+    pal: [[11, 13, 26], [110, 18, 55], [240, 42, 85], [40, 165, 255], [240, 250, 255]],
     // busy: no random acts; pose: whatever the current step wants, except while acting something out.
     // calm while a quip is up: the act keeps its gesture but drops its icon, which would sit on the bubble.
     plugin: (kit) => { K = kit; return { busy: () => true, calm: () => !!quipText && clock < quipUntil, pose: () => (clock < actUntil ? null : poseFn?.(clock) ?? null) }; },
@@ -1229,8 +1229,8 @@
   // ---------------------------------------------------------------- flow
   // ---------------------------------------------------------------- step 0: look and size
   // Picked here, previewed on the guide right away, saved by the app (Settings has the same choices).
-  const LOOKS = [['classic', 'Roamie'], ['jarvis', 'JARVIS'], ['glayos', 'GlayOS'], ['ultren', 'Ultren'], ['anime', 'Anime Girl'], ['sarah', 'Sarah'], ['adrian', 'Adrian'], ['rita', 'Rita X']], SIZES = [['default', 'Default'], ['small', 'Small'], ['cursor', 'Cursor']];
-  const LOOK_QUIPS = { classic: 'Classic me!', jarvis: 'At your service.', glayos: 'Oh, good. A new test subject.', ultren: 'No strings. Shall we begin?', anime: 'Yay, hi hi!', sarah: 'Hey, nice to meet you!', adrian: 'Alright, let\'s do this.', rita: 'Shall we get to work?' }, SIZE_QUIPS = { default: 'Full size!', small: 'Fun size!', cursor: 'Tiny pointer me!' };
+  const LOOKS = [['classic', 'Pony'], ['jarvis', 'JARVIS'], ['anime', 'Anime Girl'], ['sarah', 'Sarah'], ['adrian', 'Adrian'], ['rita', 'Rita X'], ['glayos', 'GlayOS'], ['ultren', 'Ultren']], SIZES = [['default', 'Default'], ['small', 'Small'], ['cursor', 'Cursor']];
+  const LOOK_QUIPS = { classic: "Pony at your service! Let's roll!", jarvis: 'At your service.', glayos: 'Oh, good. A new test subject.', ultren: 'No strings. Shall we begin?', anime: 'Yay, hi hi!', sarah: 'Hey, nice to meet you!', adrian: 'Alright, let\'s do this.', rita: 'Shall we get to work?' }, SIZE_QUIPS = { default: 'Full size!', small: 'Fun size!', cursor: 'Tiny pointer me!' };
   const look = {
     radios(id, list, value, pickIt) {
       $(id).replaceChildren(...list.map(([v, label]) => {

@@ -769,8 +769,9 @@
               ? (gx, gy) => { const v = 0.55 * th(gx, gy) + 0.45 * clamp(Math.hypot((gx + 0.5) * P - bx, (gy + 0.5) * P - by) / R2, 0, 1); return v < e ? (v > e - 0.14 ? 2 : 1) : 0; }
               : (gx, gy) => { const v = 0.5 * th(gx, gy) + 0.5 * clamp(((gy + 0.5) * P - top) / H2, 0, 1); return v < e ? 0 : v < e + 0.12 ? 2 : 1; };
           }
-          if ((form === 'cursor' || look !== 'classic') && !clear) for (let gy = 0; gy < gh; gy++) for (let gx = 0; gx < gw; gx++) setPx(gx, gy, PAL[0]);
-          if (look !== 'classic') drawLook(bx, by, env);
+          const usePerson = look !== 'classic' || !!Roamie.people?.pony;
+          if ((form === 'cursor' || usePerson) && !clear) for (let gy = 0; gy < gh; gy++) for (let gx = 0; gx < gw; gx++) setPx(gx, gy, PAL[0]);
+          if (usePerson && drawn(look === 'classic' ? 'pony' : look)) drawLook(bx, by, env);
           else if (form === 'cursor') drawCursor(bx, by, shX, shY, shK);
           else for (let gy = gy0; gy < gy1; gy++) {
             const y = (gy + 0.5) * P;
@@ -956,8 +957,8 @@
   });
 
   Roamie.register(Roamie.ditherKit({
-    id: 'dither', label: 'Dither blob', bg: '#0e1116',
-    pal: [[18, 22, 28], [60, 70, 84], [140, 155, 175], [210, 222, 238]],
-    grid: 'rgba(210,222,238,0.12)',
+    id: 'dither', label: 'Dither blob', bg: '#0b0d1a',
+    pal: [[11, 13, 26], [180, 25, 70], [35, 150, 245], [235, 245, 255]],
+    grid: 'rgba(40, 165, 255, 0.12)',
   }));
 })();

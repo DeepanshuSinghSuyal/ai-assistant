@@ -8,8 +8,8 @@
 (() => {
   const R = window.Roamie;
   const css = `
-.rp { --bg: #0d1117; --panel: #161b22; --ink: #f0f4f8; --ink-2: #c5d0dc; --ink-3: #95a3b3; --accent: #c8d6e5;
-  --line-hi: #475466; --line-hot: #8395a7; --s: 2px; --ease: cubic-bezier(.2, .8, .2, 1);
+.rp { --bg: #0a0c16; --panel: #111424; --ink: #f0f9ff; --ink-2: #cbd5e1; --ink-3: #94a3b8; --accent: #38bdf8;
+  --line-hi: #6d28d9; --line-hot: #f43f5e; --s: 2px; --ease: cubic-bezier(.2, .8, .2, 1);
   --notch: polygon(
     calc(var(--s) * 2) 0, calc(100% - var(--s) * 2) 0, calc(100% - var(--s) * 2) var(--s), calc(100% - var(--s)) var(--s),
     calc(100% - var(--s)) calc(var(--s) * 2), 100% calc(var(--s) * 2), 100% calc(100% - var(--s) * 2),
@@ -20,11 +20,11 @@
   position: fixed; z-index: 5; width: 380px; display: flex; flex-direction: column;
   background: var(--line-hot); clip-path: var(--notch); padding: 2px; box-sizing: border-box;
   font: 400 12.5px/1.6 "Martian Mono", "Roamies Arabic", ui-monospace, Menlo, monospace; color: var(--ink);
-  filter: drop-shadow(0 0 10px rgba(200, 214, 229, .22)) drop-shadow(0 8px 22px rgba(0, 0, 0, .45));
+  filter: drop-shadow(0 0 10px rgba(244, 63, 94, .25)) drop-shadow(0 8px 22px rgba(0, 0, 0, .5));
   opacity: 0; transform: translateX(-8px) scale(.98); transform-origin: top left;
   transition: opacity .16s var(--ease), transform .16s var(--ease); pointer-events: auto; cursor: default; }
 .rp.on { opacity: 1; transform: none; }
-.rp-in { background: rgba(18, 22, 28, .97); color: var(--ink); clip-path: var(--notch); display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.rp-in { background: rgba(11, 13, 26, .97); color: var(--ink); clip-path: var(--notch); display: flex; flex-direction: column; min-height: 0; flex: 1; }
 .rp-head { display: flex; align-items: center; gap: 8px; padding: 9px 8px 8px 14px; border-bottom: 1px solid #12302e; cursor: grab; touch-action: none; user-select: none; }
 .rp.drag .rp-head { cursor: grabbing; }
 .rp.drag { transition: none; }

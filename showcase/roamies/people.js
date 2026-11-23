@@ -21,6 +21,35 @@
   // eye: the viewer's-right eye's inner column (from the centre) and top row; mouth: its row; cy: the row of the
   // body point; fade: rows at the bottom that fade out.
   const ART = {
+    pony: {
+      L: {
+        w: 29, cy: 14, fade: 5, eye: [2, 12], mouth: 18, blush: [6, 17], tail: [6, 27],
+        patch: [[0, 13, 'hh'], [1, 13, 'hhH']],
+        rows: [
+          '....hhhh.......', '...hhHHh.......', '...hHHHh..hhhh.', '..hhHHHh.hhHHh.', '..hhHHhh.hhHHh.',
+          '.thhHHh.hhhhHh.', '.tthhhh.hhhhhh.', '.ttthhhhhhhhhhh', 'tttthhhhhwhhhhh', 'tttthhhswwwshhh',
+          'ttTthhssssssshs', 'ttTthhsssssssss', 'ttTthhsssssssss', 'ttTthhsssssssss', 'ttTt.hsssssssss',
+          'ttTt.hsssssssss', 'ttTt.hhssssssss', 'ttTt..hssssssss', 'ttTt..h.zsszsss', 'tTtt.....zzzzss',
+          'tTtt.......zsss', 'tTt.........zss', 'tTt....kkkkksss', 'tTt...kkkccckss', '.tt...kkwcccckw',
+          '.tt..kkwccccccw', '.t..kkwcccccccc', '..kkkwccccccccc', '.kkkwcccccccccc', 'kkkwwcccccccccc',
+        ],
+      },
+      S: {
+        w: 17, cy: 8, fade: 3, eye: [2, 8], mouth: 11, blush: [4, 10], tail: [4, 16],
+        patch: [[0, 6, 'hhH']],
+        rows: [
+          '..hh..hh.', '.hHHh.hHh', '.hHHhhhHh', 'thHHhhhhh', 'tthhhhhhh', 'tThhhswsh', 'tThhsssss', 'tThssssss',
+          'tThssssss', 'tT.hsssss', 'tT..sssss', 'tT...zsss', 't.....zzs', 't...kkkzs', '...kkwckw', '..kkwcccc', '.kwcccccc',
+        ],
+      },
+      X: {
+        w: 11, cy: 4, fade: 1, eye: [1, 3], mouth: 5, tail: [1, 7],
+        patch: [[0, 3, 'hH']],
+        rows: [
+          '.hh.hh', 'hHHhHh', 'thhhhh', 'thhsss', 'thssss', 'thssss', 't..zss', 't...zs', '..kkkw',
+        ],
+      },
+    },
     anime: {
       L: {
         w: 29, cy: 14, fade: 5, eye: [2, 12], mouth: 18, blush: [6, 17], tail: [5, 27],
@@ -397,5 +426,5 @@
     },
   });
 
-  R.people = { anime: person('anime'), sarah: person('sarah'), adrian: person('adrian'), rita: person('rita'), ultren: person('ultren'), glayos: person('glayos'), ken: person('ken') };
+  R.people = { pony: person('pony'), classic: person('pony'), anime: person('anime'), sarah: person('sarah'), adrian: person('adrian'), rita: person('rita'), ultren: person('ultren'), glayos: person('glayos'), ken: person('ken') };
 })();

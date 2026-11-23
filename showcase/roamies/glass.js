@@ -4,7 +4,7 @@
   const R = window.Roamie;
   if (!R || typeof document === 'undefined') return;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const ACC = '#c8d6e5', HOT = '#f5f8fc', MID = '#8395a7', DEEP = '#344050', EDGE = 'rgba(20,25,35,0.6)';
+  const ACC = '#38bdf8', HOT = '#f0f9ff', MID = '#0284c7', RED = '#f43f5e', DEEP = '#881337', EDGE = 'rgba(136,19,55,0.65)';
   const GLASS = 'rgba(6,22,24,0.94)', TEXT = '#dcfff6', DIM = '#8ab8b0', CORAL = '#ff8a7a', NOTE = '#e9a196';
   const MONO = '"Martian Mono", "Roamies Arabic", ui-monospace, monospace';
   const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
