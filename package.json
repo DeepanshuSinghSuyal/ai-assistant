@@ -1,0 +1,13 @@
+{
+  "name": "roamies-app",
+  "version": "0.1.50",
+  "description": "Roamies AI desktop companion with Google Gemini AI & Live Voice",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve-showcase.mjs",
+    "setup": "node scripts/setup-gemini.mjs",
+    "download:app": "node scripts/download-desktop-app.mjs",
+    "test:sidecar": "cd showcase/tauri/sidecar && npm test"
+  }
+}

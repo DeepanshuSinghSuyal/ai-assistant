@@ -1,5 +1,6 @@
 # Build output
 *.app
+*.exe
 showcase/tauri/dist/
 showcase/tauri/sidecar/dist/
 showcase/tauri/src-tauri/target/
